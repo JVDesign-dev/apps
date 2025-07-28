@@ -1,11 +1,14 @@
 window.onload = async function () {
     hookHistoryMethods();
-    handleLocationChange();
-
     window.addEventListener('locationchange', handleLocationChange);
+
+    const URLparts = window.location.pathname.split('/');
+    window.base = URLparts.length > 1 ? `/${URLparts[1]}/` : '/';
 
     const response = await fetch(`${window.base}apps.json`);
     window.apps = await response.json();
+
+    handleLocationChange();
 
     document.addEventListener('click', (e) => {
         const target = e.target;
@@ -45,9 +48,6 @@ function handleLocationChange() {
     if(window.location.pathname !== path) {
         window.history.replaceState(null, '', path);
     }
-
-    const URLparts = window.location.pathname.split('/');
-    window.base = URLparts.length > 1 ? `/${URLparts[1]}/` : '/';
 
     renderContent();
 }
