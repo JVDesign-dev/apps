@@ -1,8 +1,10 @@
 {
     "gradia": {
-        "title": "Gradia"
+        "title": "Gradia",
+        "link": "/gradia/"
     },
     "datamanager.js": {
-        "title": "DataManager.js"
+        "title": "DataManager.js",
+        "link": "https://datamanager.js.org"
     }
 }

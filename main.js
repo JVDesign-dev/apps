@@ -61,6 +61,7 @@ async function renderContent() {
     if (currentApp) {
         document.getElementById('title').textContent = currentApp.title;
         document.title = currentApp.title;
+        document.getElementById('app-link').dataset.route = currentApp.link;
     }
     else {
         document.getElementById('title').textContent = 'Not Found';
