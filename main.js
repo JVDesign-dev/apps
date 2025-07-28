@@ -15,7 +15,7 @@ window.onload = async function () {
         if (target.matches('[data-route]')) {
             const route = target.dataset.route;
             if(route.includes(window.base)) window.history.pushState(null, '', route); // triggers locationchange
-            else window.location.replace(route);
+            else window.location.assign(route);
 
             e.preventDefault();
         }
