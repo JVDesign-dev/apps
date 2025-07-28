@@ -1,0 +1,69 @@
+window.onload = () => {
+    hookHistoryMethods();
+    handleLocationChange();
+
+    window.addEventListener('locationchange', handleLocationChange);
+
+    document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target.matches('[data-route]')) {
+            const route = target.dataset.route;
+            if(route.includes(window.base)) window.history.pushState(null, '', route); // triggers locationchange
+            else window.location.replace(route);
+
+            e.preventDefault();
+        }
+    });
+}
+
+function hookHistoryMethods() {
+    const origPush = history.pushState;
+    const origReplace = history.replaceState;
+
+    history.pushState = function (...args) {
+        origPush.apply(this, args);
+        window.dispatchEvent(new Event('locationchange'));
+    };
+
+    history.replaceState = function (...args) {
+        origReplace.apply(this, args);
+        window.dispatchEvent(new Event('locationchange'));
+    };
+
+    window.addEventListener('popstate', () => {
+        window.dispatchEvent(new Event('locationchange'));
+    });
+}
+
+function handleLocationChange() {
+    const normalized = window.location.pathname.toLowerCase();
+    let path = normalized.endsWith('/') ? normalized : `${normalized}/`;
+
+    if(window.location.pathname !== path) {
+        window.history.replaceState(null, '', path);
+    }
+
+    const URLparts = window.location.pathname.split('/');
+    window.base = URLparts.length > 1 ? `/${URLparts[1]}/` : '/';
+
+    renderContent();
+}
+
+async function renderContent() {
+    const response = await fetch('app.json');
+    const apps = await response.json();
+
+    const URLroute = window.location.pathname.slice(window.base.length);
+    const route = URLroute.endsWith('/') ? URLroute.slice(0, -1) : URLroute;
+
+    let currentApp = apps[route] || '';
+
+    if (currentApp) {
+        document.getElementById('title').textContent = currentApp.title;
+        document.title = currentApp.title;
+    }
+    else {
+        document.getElementById('title').textContent = 'Not Found';
+        document.title = 'Not Found';
+    }
+}
