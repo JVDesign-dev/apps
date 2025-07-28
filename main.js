@@ -50,7 +50,7 @@ function handleLocationChange() {
 }
 
 async function renderContent() {
-    const response = await fetch('app.json');
+    const response = await fetch('apps.json');
     const apps = await response.json();
 
     const URLroute = window.location.pathname.slice(window.base.length);
