@@ -1,8 +1,11 @@
-window.onload = () => {
+window.onload = async function () {
     hookHistoryMethods();
     handleLocationChange();
 
     window.addEventListener('locationchange', handleLocationChange);
+
+    const response = await fetch(`${window.base}apps.json`);
+    window.apps = await response.json();
 
     document.addEventListener('click', (e) => {
         const target = e.target;
@@ -50,13 +53,10 @@ function handleLocationChange() {
 }
 
 async function renderContent() {
-    const response = await fetch(`${window.base}apps.json`);
-    const apps = await response.json();
-
     const URLroute = window.location.pathname.slice(window.base.length);
     const route = URLroute.endsWith('/') ? URLroute.slice(0, -1) : URLroute;
 
-    let currentApp = apps[route] || '';
+    let currentApp = window.apps[route] || '';
 
     if (currentApp) {
         document.getElementById('title').textContent = currentApp.title;
